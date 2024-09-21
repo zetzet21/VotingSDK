@@ -1,6 +1,7 @@
 package zetzet.workspace.sdk_voting_t1.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import zetzet.workspace.sdk_voting_t1.dto.vote.VoteCreateDTO;
 import zetzet.workspace.sdk_voting_t1.dto.vote.VoteDTO;
@@ -20,30 +21,27 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class VoteService {
 
-    @Autowired
-    private VoteRepository voteRepository;
+    private final VoteRepository voteRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserService userService;
 
-    @Autowired
-    private UserVoteRepository userVoteRepository;
+    private final UserVoteRepository userVoteRepository;
 
-    @Autowired
-    private VoteMapper voteMapper;
+    private final VoteMapper voteMapper;
 
     // Метод для регистрации голоса пользователя
-    public VoteDTO castVote(UUID userId, UUID voteId, String selectedOption) {
+    public VoteDTO castVote(String username, UUID voteId, String selectedOption) throws UsernameNotFoundException {
         // Получаем голосование
         Vote vote = voteRepository.findById(voteId)
                 .orElseThrow(() -> new RuntimeException("Vote not found"));
 
-        Optional<User> user = userRepository.findById(userId);
+        User user = userService.getByUsername(username);
 
         // Проверяем, голосовал ли пользователь ранее
-        UserVote userVote = userVoteRepository.findByUserIdAndVoteId(userId, voteId)
+        UserVote userVote = userVoteRepository.findByUserIdAndVoteId(user.getId(), voteId)
                 .orElseGet(() -> {
                     // Если пользователь не голосовал, создаём новую запись
                     UserVote newUserVote = new UserVote();
