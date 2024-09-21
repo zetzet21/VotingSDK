@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ public class Vote {
     private String title;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<VoteOptions> options;
+    private List<VoteOptions> options = new ArrayList<>();
 
     // Сущность может содержать различные статусы (активно/закрыто или другое)
     @Enumerated(EnumType.STRING)

@@ -12,6 +12,7 @@ import zetzet.workspace.sdk_voting_t1.repository.VoteRepository;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,12 +34,31 @@ public class VoteService {
 
     // Метод для создания нового голосования
     public VoteDTO createVote(VoteDTO voteDTO) {
+        // Создание нового голосования
         Vote vote = new Vote();
         vote.setTitle(voteDTO.title());
         vote.setStatus(VoteStatus.ACTIVE);
-        voteRepository.save(vote);
-        voteOptionsRepository.saveAll(mapper.toEntity(voteDTO.options()));
-        return new VoteDTO(vote.getId(), vote.getTitle(), vote.getOptions().stream().map(VoteOptions::getText).toList(), vote.getStatus());
+
+        List<VoteOptions> options = voteDTO.options().stream()
+                .map(optionText -> {
+                    VoteOptions voteOption = new VoteOptions();
+                    voteOption.setText(optionText);
+                    voteOption.setVote(vote);
+                    return voteOption;
+                }).collect(Collectors.toList());
+
+        vote.setOptions(options);
+
+        Vote savedVote = voteRepository.save(vote);
+
+        return new VoteDTO(savedVote
+                .getId(), savedVote
+                .getTitle(), savedVote
+                .getOptions()
+                .stream()
+                .map(VoteOptions::getText)
+                .toList(), savedVote
+                .getStatus());
     }
 
     // Метод для закрытия голосования

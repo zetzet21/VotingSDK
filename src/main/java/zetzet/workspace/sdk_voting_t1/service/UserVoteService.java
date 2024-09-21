@@ -31,7 +31,7 @@ public class UserVoteService {
 
     // Метод для записи голоса пользователя
     public void castVote(KanoVoteDTO kanoVoteDTO) {
-        UserVote userVote = userVoteRepository.findByUserIdAndVoteId(kanoVoteDTO.userId(), kanoVoteDTO.voteId())
+        UserVote userVote = userVoteRepository.findByUserIdAndVoteOptionsId(kanoVoteDTO.userId(), kanoVoteDTO.voteId())
                 .orElseGet(() -> {
                     UserVote newUserVote = new UserVote();
                     newUserVote.setUser(new User(kanoVoteDTO.userId()));
