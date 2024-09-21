@@ -1,9 +1,10 @@
-package zetzet.workspace.sdk_voting_t1.entity;
+package zetzet.workspace.sdk_voting_t1.entity.role;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import zetzet.workspace.sdk_voting_t1.entity.User;
 
 import java.util.HashSet;
 import java.util.Set;

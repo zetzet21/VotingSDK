@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import zetzet.workspace.sdk_voting_t1.entity.Role;
+import zetzet.workspace.sdk_voting_t1.entity.role.Role;
 import zetzet.workspace.sdk_voting_t1.entity.User;
 import zetzet.workspace.sdk_voting_t1.repository.UserRepository;
 

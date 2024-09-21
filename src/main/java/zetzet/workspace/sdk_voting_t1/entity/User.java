@@ -2,8 +2,8 @@ package zetzet.workspace.sdk_voting_t1.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import zetzet.workspace.sdk_voting_t1.entity.role.Role;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
