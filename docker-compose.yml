@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16.1
+    environment:
+      POSTGRES_DB: "sdk_voting"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - sdk_hackaton_data:/var/lib/postgresql/data
+    ports:
+      - "5000:5432"
+volumes:
+  sdk_hackaton_data:

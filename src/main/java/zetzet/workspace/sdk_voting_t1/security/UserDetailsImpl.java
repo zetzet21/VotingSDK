@@ -1,28 +1,21 @@
-package zetzet.workspace.sdk_voting_t1.Config;
+package zetzet.workspace.sdk_voting_t1.security;
 
+import zetzet.workspace.sdk_voting_t1.entity.User;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import zetzet.workspace.sdk_voting_t1.Model.User;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
-public class MyUserDetails implements UserDetails {
+@RequiredArgsConstructor
+public class UserDetailsImpl implements UserDetails {
 
-    private User user;
-
-    public MyUserDetails(User user){
-        this.user = user;
-    }
+    private final User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.stream(user.getRole().split(", "))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        return user.getRoles();
     }
 
     @Override
