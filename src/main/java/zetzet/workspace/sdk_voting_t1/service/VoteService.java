@@ -5,12 +5,17 @@ import org.springframework.stereotype.Service;
 import zetzet.workspace.sdk_voting_t1.dto.vote.VoteCreateDTO;
 import zetzet.workspace.sdk_voting_t1.dto.vote.VoteDTO;
 import zetzet.workspace.sdk_voting_t1.dto.vote.VoteUpdateDTO;
+import zetzet.workspace.sdk_voting_t1.entity.User;
+import zetzet.workspace.sdk_voting_t1.entity.UserVote;
 import zetzet.workspace.sdk_voting_t1.entity.Vote;
 import zetzet.workspace.sdk_voting_t1.entity.VoteStatus;
 import zetzet.workspace.sdk_voting_t1.mapper.VoteMapper;
+import zetzet.workspace.sdk_voting_t1.repository.UserRepository;
+import zetzet.workspace.sdk_voting_t1.repository.UserVoteRepository;
 import zetzet.workspace.sdk_voting_t1.repository.VoteRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -21,7 +26,40 @@ public class VoteService {
     private VoteRepository voteRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserVoteRepository userVoteRepository;
+
+    @Autowired
     private VoteMapper voteMapper;
+
+    // Метод для регистрации голоса пользователя
+    public VoteDTO castVote(UUID userId, UUID voteId, String selectedOption) {
+        // Получаем голосование
+        Vote vote = voteRepository.findById(voteId)
+                .orElseThrow(() -> new RuntimeException("Vote not found"));
+
+        Optional<User> user = userRepository.findById(userId);
+
+        // Проверяем, голосовал ли пользователь ранее
+        UserVote userVote = userVoteRepository.findByUserIdAndVoteId(userId, voteId)
+                .orElseGet(() -> {
+                    // Если пользователь не голосовал, создаём новую запись
+                    UserVote newUserVote = new UserVote();
+                    newUserVote.setUser(new User());  // Здесь предполагается, что у вас есть сущность User
+                    newUserVote.setVote(vote);
+                    return newUserVote;
+                });
+
+        // Устанавливаем новый выбранный вариант
+        userVote.setSelectedOption(selectedOption);
+        userVoteRepository.save(userVote);  // Сохраняем в БД
+
+        // Возвращаем актуализированные данные голосования (опционально)
+        return voteMapper.toDto(vote);
+    }
+
 
     public List<VoteDTO> getAllVotes() {
         return voteRepository.findAll()

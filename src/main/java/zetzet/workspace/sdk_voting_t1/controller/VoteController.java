@@ -45,5 +45,13 @@ public class VoteController {
     public ResponseEntity<VoteDTO> updateVote(@PathVariable UUID id, @RequestBody VoteUpdateDTO voteUpdateDTO) {
         return ResponseEntity.ok(voteService.updateVote(id, voteUpdateDTO));
     }
+
+    // Пользователь голосует за вариант в голосовании
+    @PostMapping("/{voteId}/vote")
+    public ResponseEntity<VoteDTO> castVote(@PathVariable UUID voteId,
+                                            @RequestParam UUID userId,
+                                            @RequestParam String selectedOption) {
+        return ResponseEntity.ok(voteService.castVote(userId, voteId, selectedOption));
+    }
 }
 
