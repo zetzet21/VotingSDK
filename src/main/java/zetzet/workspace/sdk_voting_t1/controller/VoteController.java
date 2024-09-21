@@ -1,7 +1,10 @@
 package zetzet.workspace.sdk_voting_t1.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import zetzet.workspace.sdk_voting_t1.dto.vote.VoteCreateDTO;
 import zetzet.workspace.sdk_voting_t1.dto.vote.VoteDTO;
@@ -13,31 +16,32 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/votes")
+@RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 public class VoteController {
 
-    @Autowired
-    private VoteService voteService;
+    private final VoteService voteService;
 
-    // Получить список всех голосований
     @GetMapping
+    @PreAuthorize("hasRole('ANALYST')")
     public List<VoteDTO> getAllVotes() {
         return voteService.getAllVotes();
     }
 
-    // Получить голосование по ID
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ANALYST')")
     public ResponseEntity<VoteDTO> getVoteById(@PathVariable UUID id) {
         return ResponseEntity.ok(voteService.getVoteById(id));
     }
 
-    // Создать новое голосование (только администратор)
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VoteDTO> createVote(@RequestBody VoteCreateDTO voteCreateDTO) {
         return ResponseEntity.ok(voteService.createVote(voteCreateDTO));
     }
 
-    // Обновить голосование (закрыть/открыть)
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VoteDTO> updateVote(@PathVariable UUID id, @RequestBody VoteUpdateDTO voteUpdateDTO) {
         return ResponseEntity.ok(voteService.updateVote(id, voteUpdateDTO));
     }

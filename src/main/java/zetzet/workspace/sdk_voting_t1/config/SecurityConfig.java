@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .logout(LogoutConfigurer::permitAll)
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/api/auth/registration").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
                         .anyRequest().permitAll()
