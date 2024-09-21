@@ -3,29 +3,22 @@ package zetzet.workspace.sdk_voting_t1.mapper;
 import org.springframework.stereotype.Component;
 import zetzet.workspace.sdk_voting_t1.dto.vote.VoteCreateDTO;
 import zetzet.workspace.sdk_voting_t1.dto.vote.VoteDTO;
-import zetzet.workspace.sdk_voting_t1.entity.Vote;
-import zetzet.workspace.sdk_voting_t1.entity.VoteStatus;
+import zetzet.workspace.sdk_voting_t1.entity.vote.Vote;
+import zetzet.workspace.sdk_voting_t1.entity.vote.VoteOptions;
+import zetzet.workspace.sdk_voting_t1.entity.vote.VoteStatus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class VoteMapper {
+    public List<VoteOptions> toEntity(List<String> optionsTexts) {
+        List<VoteOptions> voteOptions = new ArrayList<>();
 
-    // Преобразовать Vote в VoteDTO
-    public VoteDTO toDto(Vote vote) {
-        return new VoteDTO(
-                vote.getId(),
-                vote.getTitle(),
-                vote.getDescription(),
-                vote.getStatus().name(),
-                vote.getCreatedAt()
-        );
-    }
+        for (var optionText : optionsTexts) {
+            voteOptions.add(VoteOptions.builder().text(optionText).build());
+        }
 
-    // Преобразовать VoteCreateDTO в сущность Vote
-    public Vote toEntity(VoteCreateDTO dto) {
-        Vote vote = new Vote();
-        vote.setTitle(dto.title());  // Обращение к полям record через вызов методов
-        vote.setDescription(dto.description());
-        vote.setStatus(VoteStatus.OPEN);  // По умолчанию голосование открыто
-        return vote;
+        return voteOptions;
     }
 }

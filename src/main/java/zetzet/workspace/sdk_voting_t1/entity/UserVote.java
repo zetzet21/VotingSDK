@@ -3,6 +3,8 @@ package zetzet.workspace.sdk_voting_t1.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import zetzet.workspace.sdk_voting_t1.entity.vote.Vote;
+import zetzet.workspace.sdk_voting_t1.entity.vote.VoteOptions;
 
 import java.util.UUID;
 
@@ -16,14 +18,19 @@ public class UserVote {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    // Пользователь, который голосует
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;  // Пользователь, который голосует
+    private User user;
 
+    // Голосование, к которому относится голос
     @ManyToOne
-    @JoinColumn(name = "vote_id")
-    private Vote vote;  // Голосование, к которому относится голос
+    @JoinColumn(name = "vote_options_id")
+    private VoteOptions voteOptions;
 
-    private String selectedOption;  // Вариант, выбранный пользователем
-
+    // Ответ на вопрос: как вы бы себя чувствовали, если функция будет добавлена
+    private String positiveResponse;
+    // Ответ на вопрос: как вы бы себя чувствовали, если функция НЕ будет добавлена
+    private String negativeResponse;
 }
+
