@@ -21,13 +21,9 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final UserMapper mapper;
-
-    public UserInfoResponse getByUsername(String username) throws UsernameNotFoundException {
-        User user =  userRepository.findByUsername(username).
+    public User getByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username).
                 orElseThrow(() -> new UsernameNotFoundException("User with login:" + username + "not found"));
-
-        return mapper.toDto(user);
     }
 
     public void registerUser(User user) {

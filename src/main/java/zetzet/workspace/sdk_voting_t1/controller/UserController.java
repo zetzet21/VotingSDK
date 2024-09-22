@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import zetzet.workspace.sdk_voting_t1.dto.response.UserInfoResponse;
 import zetzet.workspace.sdk_voting_t1.entity.User;
+import zetzet.workspace.sdk_voting_t1.mapper.UserMapper;
 import zetzet.workspace.sdk_voting_t1.security.JwtService;
 import zetzet.workspace.sdk_voting_t1.service.UserService;
 
@@ -21,17 +22,20 @@ public class UserController extends AbstractController {
 
     private final UserService userService;
 
-    public UserController(JwtService jwtService, UserService userService) {
+    private final UserMapper mapper;
+
+    public UserController(JwtService jwtService, UserService userService, UserMapper mapper) {
         super(jwtService);
         this.userService = userService;
+        this.mapper = mapper;
     }
 
     @GetMapping()
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserInfoResponse> getUser(HttpServletRequest request) {
         String username = getUsername(request);
-        UserInfoResponse userInfo = userService.getByUsername(username);
+        User user = userService.getByUsername(username);
 
-        return ResponseEntity.ok().body(userInfo);
+        return ResponseEntity.ok().body(mapper.toDto(user));
     }
 }

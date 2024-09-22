@@ -8,6 +8,7 @@ public class SdkVotingT1Application {
 
     public static void main(String[] args) {
         SpringApplication.run(SdkVotingT1Application.class, args);
+        //new SdkVotingT1Application();
     }
 
 }
