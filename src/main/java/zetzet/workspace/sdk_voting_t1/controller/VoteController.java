@@ -3,7 +3,8 @@ package zetzet.workspace.sdk_voting_t1.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import zetzet.workspace.sdk_voting_t1.dto.vote.VoteDTO;
+import zetzet.workspace.sdk_voting_t1.dto.request.VoteDTORequest;
+import zetzet.workspace.sdk_voting_t1.dto.response.VoteDTOResponse;
 import zetzet.workspace.sdk_voting_t1.service.VoteService;
 
 import java.util.List;
@@ -18,13 +19,13 @@ public class VoteController {
 
     // Получить все голосования
     @GetMapping
-    public List<VoteDTO> getAllVotes() {
+    public List<VoteDTOResponse> getAllVotes() {
         return voteService.getAllVotes();
     }
 
     // Создать новое голосование
     @PostMapping
-    public ResponseEntity<VoteDTO> createVote(@RequestBody VoteDTO voteDTO) {
+    public ResponseEntity<VoteDTORequest> createVote(@RequestBody VoteDTORequest voteDTO) {
         return ResponseEntity.ok(voteService.createVote(voteDTO));
     }
 

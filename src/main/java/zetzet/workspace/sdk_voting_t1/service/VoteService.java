@@ -2,6 +2,8 @@ package zetzet.workspace.sdk_voting_t1.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import zetzet.workspace.sdk_voting_t1.dto.request.VoteDTORequest;
+import zetzet.workspace.sdk_voting_t1.dto.response.VoteDTOResponse;
 import zetzet.workspace.sdk_voting_t1.dto.vote.VoteDTO;
 import zetzet.workspace.sdk_voting_t1.entity.vote.Vote;
 import zetzet.workspace.sdk_voting_t1.entity.vote.VoteOptions;
@@ -25,11 +27,11 @@ public class VoteService {
     private final VoteMapper mapper;
 
     // Метод для получения всех голосований
-    public List<VoteDTO> getAllVotes() {
+    public List<VoteDTOResponse> getAllVotes() {
         return voteRepository.findAll()
                 .stream()
                 .map(vote ->
-                        new VoteDTO(vote.getId(),
+                        new VoteDTOResponse(vote.getId(),
                                 vote.getTitle(),
                                 vote.getOptions().stream().toList(),
                                 vote.getStatus()))
@@ -37,16 +39,16 @@ public class VoteService {
     }
 
     // Метод для создания нового голосования
-    public VoteDTO createVote(VoteDTO voteDTO) {
+    public VoteDTORequest createVote(VoteDTORequest voteDTO) {
         // Создание нового голосования
         Vote vote = new Vote();
         vote.setTitle(voteDTO.title());
         vote.setStatus(VoteStatus.ACTIVE);
 
         List<VoteOptions> options = voteDTO.options().stream()
-                .map(option -> {
+                .map(optionText -> {
                     VoteOptions voteOption = new VoteOptions();
-                    voteOption.setText(option.getText());
+                    voteOption.setText(optionText);
                     voteOption.setVote(vote);
                     return voteOption;
                 }).collect(Collectors.toList());
@@ -55,9 +57,13 @@ public class VoteService {
 
         Vote savedVote = voteRepository.save(vote);
 
-        return new VoteDTO(savedVote
+        return new VoteDTORequest(savedVote
                 .getId(), savedVote
-                .getTitle(), options, savedVote
+                .getTitle(), savedVote
+                .getOptions()
+                .stream()
+                .map(VoteOptions::getText)
+                .toList(), savedVote
                 .getStatus());
     }
 
