@@ -9,10 +9,7 @@ import zetzet.workspace.sdk_voting_t1.entity.UserVote;
 import zetzet.workspace.sdk_voting_t1.entity.UserVoteCSI;
 import zetzet.workspace.sdk_voting_t1.entity.vote.Vote;
 import zetzet.workspace.sdk_voting_t1.kano.KanoClassification;
-import zetzet.workspace.sdk_voting_t1.repository.UserVoteCSIRepository;
-import zetzet.workspace.sdk_voting_t1.repository.UserVoteRepository;
-import zetzet.workspace.sdk_voting_t1.repository.VoteOptionsRepository;
-import zetzet.workspace.sdk_voting_t1.repository.VoteRepository;
+import zetzet.workspace.sdk_voting_t1.repository.*;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -32,12 +29,16 @@ public class UserVoteService {
 
     private final KanoClassification kanoClassification;
 
+    private final UserRepository userRepository;
+
     // Метод для записи голоса пользователя
     public void castVote(KanoVoteDTO kanoVoteDTO) {
-        UserVote userVote = userVoteRepository.findByUserIdAndVoteOptionsId(kanoVoteDTO.userId(), kanoVoteDTO.voteId())
+        UUID userId = userRepository.findByUsername(kanoVoteDTO.username()).get().getId();
+
+        UserVote userVote = userVoteRepository.findByUserIdAndVoteOptionsId(userId, kanoVoteDTO.voteId())
                 .orElseGet(() -> {
                     UserVote newUserVote = new UserVote();
-                    newUserVote.setUser(new User(kanoVoteDTO.userId()));
+                    newUserVote.setUser(new User(userId));
                     newUserVote.setVoteOptions(voteOptionsRepository.findById(kanoVoteDTO.voteOptionsId())
                             .orElseThrow(() -> new RuntimeException("Vote not found")));
                     return newUserVote;
@@ -49,10 +50,12 @@ public class UserVoteService {
     }
 
     public void castVote(CSIVoteDto csiVoteDto) {
-        UserVoteCSI userVote = userVoteCSIRepository.findByUserIdAndVoteOptionsId(csiVoteDto.userId(), csiVoteDto.voteId())
+        UUID userId = userRepository.findByUsername(csiVoteDto.username()).get().getId();
+
+        UserVoteCSI userVote = userVoteCSIRepository.findByUserIdAndVoteOptionsId(userId, csiVoteDto.voteId())
                 .orElseGet(() -> {
                     UserVoteCSI newUserVote = new UserVoteCSI();
-                    newUserVote.setUser(new User(csiVoteDto.userId()));
+                    newUserVote.setUser(new User(userId));
                     newUserVote.setVoteOptions(voteOptionsRepository.findById(csiVoteDto.voteOptionsId())
                             .orElseThrow(() -> new RuntimeException("Vote not found")));
                     return newUserVote;

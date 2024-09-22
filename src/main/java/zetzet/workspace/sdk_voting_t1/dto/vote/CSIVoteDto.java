@@ -5,7 +5,7 @@ import java.util.UUID;
 public record CSIVoteDto (
         UUID voteId,
         UUID voteOptionsId,
-        UUID userId,
+        String username,
         Integer userRating
 ) {
 }

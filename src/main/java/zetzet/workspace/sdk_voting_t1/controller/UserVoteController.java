@@ -12,6 +12,7 @@ import zetzet.workspace.sdk_voting_t1.dto.vote.CSIVoteDto;
 import zetzet.workspace.sdk_voting_t1.dto.vote.KanoVoteDTO;
 import zetzet.workspace.sdk_voting_t1.dto.vote.UserVoteCSIResultDTO;
 import zetzet.workspace.sdk_voting_t1.dto.vote.UserVoteResultDTO;
+import zetzet.workspace.sdk_voting_t1.security.JwtService;
 import zetzet.workspace.sdk_voting_t1.service.UserVoteService;
 
 import java.util.List;
@@ -19,12 +20,16 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/uservotes")
-@RequiredArgsConstructor
 @SecurityRequirement(name = "Bearer Authentication")
 @PreAuthorize("isAuthenticated()")
-public class UserVoteController {
+public class UserVoteController extends AbstractController{
 
     private final UserVoteService userVoteService;
+
+    public UserVoteController(JwtService jwtService, UserVoteService userVoteService) {
+        super(jwtService);
+        this.userVoteService = userVoteService;
+    }
 
     @Operation(summary = "Получить все голосования", description = "Возвращает информацию о всех голосованиях.",
             responses = {

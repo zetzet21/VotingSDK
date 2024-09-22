@@ -5,7 +5,7 @@ import java.util.UUID;
 public record KanoVoteDTO(
         UUID voteId,
         UUID voteOptionsId,
-        UUID userId,
+        String username,
         String positiveResponse,
         String negativeResponse
 ) {
