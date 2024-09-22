@@ -32,9 +32,11 @@ public class VoteOptions {
     private Vote vote;
 
     @OneToMany(mappedBy = "voteOptions", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<UserVote> results;
 
     @OneToMany(mappedBy = "voteOptions", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<UserVoteCSI> resultsCSI;
 }
 
