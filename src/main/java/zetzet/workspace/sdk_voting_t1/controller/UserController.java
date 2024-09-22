@@ -1,5 +1,6 @@
 package zetzet.workspace.sdk_voting_t1.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,27 +13,20 @@ import zetzet.workspace.sdk_voting_t1.service.UserService;
 
 @RestController
 @RequestMapping("/api/user")
-@RequiredArgsConstructor
 public class UserController extends AbstractController {
 
     private final UserService userService;
 
-    private final JwtService jwtService;
-
-
-    @GetMapping("/{token}")
-    public ResponseEntity<User> getUser(@PathVariable String token) {
-        String username = getUsernameFromToken(token);
-        User user = userService.getByUsername(username);
-
-        if (user != null) {
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public UserController(JwtService jwtService, UserService userService) {
+        super(jwtService);
+        this.userService = userService;
     }
 
-    private String getUsernameFromToken(String token) {
-        return jwtService.extractUsernameWithoutBearerPrefix(token);
+    @GetMapping()
+    public ResponseEntity<User> getUser(HttpServletRequest request) {
+        String username = getUsername(request);
+        User user = userService.getByUsername(username);
+
+        return ResponseEntity.ok().body(user);
     }
 }
