@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import zetzet.workspace.sdk_voting_t1.dto.request.VoteDTORequest;
 import zetzet.workspace.sdk_voting_t1.dto.response.VoteDTOResponse;
-import zetzet.workspace.sdk_voting_t1.dto.vote.VoteDTO;
 import zetzet.workspace.sdk_voting_t1.entity.vote.Vote;
 import zetzet.workspace.sdk_voting_t1.entity.vote.VoteOptions;
 import zetzet.workspace.sdk_voting_t1.entity.vote.VoteStatus;
