@@ -2,9 +2,10 @@ package zetzet.workspace.sdk_voting_t1.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import zetzet.workspace.sdk_voting_t1.dto.vote.KanoVoteDTO;
 import zetzet.workspace.sdk_voting_t1.dto.vote.UserVoteResultDTO;
-import zetzet.workspace.sdk_voting_t1.dto.vote.VoteOptionWithCount;
+import zetzet.workspace.sdk_voting_t1.dto.vote.VoteOptionWithCountAndPercent;
 import zetzet.workspace.sdk_voting_t1.entity.User;
 import zetzet.workspace.sdk_voting_t1.entity.UserVote;
 import zetzet.workspace.sdk_voting_t1.entity.vote.Vote;
@@ -49,9 +50,11 @@ public class UserVoteService {
         Vote vote = voteRepository.findById(voteId).orElseThrow();
 
         List<UserVote> userVotes = new ArrayList<>();
+        Map<String, Integer> countUserVotes = new HashMap<>();
 
-        for (var options : vote.getOptions()) {
-            userVotes.addAll(options.getResults());
+        for (var option : vote.getOptions()) {
+            userVotes.addAll(option.getResults());
+            countUserVotes.put(option.getText(), option.getResults().size());
         }
 
         Map<String, Map<String, Long>> results = userVotes.stream()
@@ -61,10 +64,10 @@ public class UserVoteService {
                                 Collectors.toList(),
                                 list -> {
                                     Map<String, Long> classificationWithCount = new HashMap<>();
-                                    for (var l : list){
+                                    for (var userVote : list){
                                         String classification = kanoClassification.classify(
-                                                l.getPositiveResponse(),
-                                                l.getNegativeResponse()
+                                                userVote.getPositiveResponse(),
+                                                userVote.getNegativeResponse()
                                         );
 
                                         if (!classificationWithCount.containsKey(classification)){
@@ -80,7 +83,9 @@ public class UserVoteService {
                                     return classificationWithCount;
                                 }
                         )
-                ));
+        ));
+
+
 
         return results.entrySet()
                 .stream()
@@ -90,7 +95,10 @@ public class UserVoteService {
                         entry.getValue()
                                 .entrySet()
                                 .stream()
-                                .map(x -> new VoteOptionWithCount(x.getKey(), x.getValue()))
+                                .map(x -> new VoteOptionWithCountAndPercent(
+                                        x.getKey(),
+                                        x.getValue(),
+                                        (double) (100 * x.getValue() / countUserVotes.get(entry.getKey()))))
                                 .toList())
                 )
                 .toList();

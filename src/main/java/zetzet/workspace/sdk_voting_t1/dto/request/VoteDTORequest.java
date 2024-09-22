@@ -1,6 +1,5 @@
 package zetzet.workspace.sdk_voting_t1.dto.request;
 
-import zetzet.workspace.sdk_voting_t1.entity.vote.VoteOptions;
 import zetzet.workspace.sdk_voting_t1.entity.vote.VoteStatus;
 
 import java.util.List;

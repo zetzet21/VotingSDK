@@ -3,7 +3,7 @@ package zetzet.workspace.sdk_voting_t1.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import zetzet.workspace.sdk_voting_t1.entity.vote.Vote;
+
 import zetzet.workspace.sdk_voting_t1.entity.vote.VoteOptions;
 
 import java.util.UUID;

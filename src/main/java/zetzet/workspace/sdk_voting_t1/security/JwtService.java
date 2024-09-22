@@ -26,14 +26,14 @@ public class JwtService {
 
     public static final Integer TOKEN_START_POSITION = 7;
 
-    //@Value("${jwt.secret-key}")
-    private String secretKey = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
+    @Value("${jwt.secret-key}")
+    private String secretKey;
 
-    //@Value("${jwt.expiration-in-hour}")
-    private Integer jwtExpirationInHour = 12;
+    @Value("${jwt.expiration-in-hour}")
+    private Integer jwtExpirationInHour;
 
-   // @Value("${jwt.refresh-token.expiration}")
-    private Integer refreshExpiration = 12;
+    @Value("${jwt.refresh-token.expiration}")
+    private Integer refreshExpiration;
 
     public String extractUsernameWithoutBearerPrefix(String token) {
         return extractUsername(token.substring(TOKEN_START_POSITION));

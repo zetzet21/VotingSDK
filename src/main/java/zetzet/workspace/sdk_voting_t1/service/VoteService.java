@@ -2,13 +2,12 @@ package zetzet.workspace.sdk_voting_t1.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import zetzet.workspace.sdk_voting_t1.dto.request.VoteDTORequest;
 import zetzet.workspace.sdk_voting_t1.dto.response.VoteDTOResponse;
 import zetzet.workspace.sdk_voting_t1.entity.vote.Vote;
 import zetzet.workspace.sdk_voting_t1.entity.vote.VoteOptions;
 import zetzet.workspace.sdk_voting_t1.entity.vote.VoteStatus;
-import zetzet.workspace.sdk_voting_t1.mapper.VoteMapper;
-import zetzet.workspace.sdk_voting_t1.repository.VoteOptionsRepository;
 import zetzet.workspace.sdk_voting_t1.repository.VoteRepository;
 
 import java.util.List;
@@ -20,10 +19,6 @@ import java.util.stream.Collectors;
 public class VoteService {
 
     private final VoteRepository voteRepository;
-
-    private final VoteOptionsRepository voteOptionsRepository;
-
-    private final VoteMapper mapper;
 
     // Метод для получения всех голосований
     public List<VoteDTOResponse> getAllVotes() {

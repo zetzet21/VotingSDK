@@ -8,7 +8,7 @@ public record UserVoteResultDTO (
 
         String option,
 
-        List<VoteOptionWithCount> voteOptionWithCount
+        List<VoteOptionWithCountAndPercent> voteOptionWithCountAndPercent
 ) {
 }
 

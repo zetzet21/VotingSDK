@@ -21,7 +21,7 @@ public class Vote {
     // Название голосования
     private String title;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "vote", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<VoteOptions> options = new ArrayList<>();
 
     // Сущность может содержать различные статусы (активно/закрыто или другое)

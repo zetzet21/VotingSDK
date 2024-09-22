@@ -2,6 +2,7 @@ package zetzet.workspace.sdk_voting_t1.entity.vote;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import zetzet.workspace.sdk_voting_t1.entity.UserVote;
 
 import java.util.List;
