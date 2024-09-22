@@ -1,5 +1,6 @@
 package zetzet.workspace.sdk_voting_t1.entity.vote;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +28,7 @@ public class VoteOptions {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "vote_id")
+    @JsonIgnore
     private Vote vote;
 
     @OneToMany(mappedBy = "voteOptions", cascade = CascadeType.ALL, orphanRemoval = true)

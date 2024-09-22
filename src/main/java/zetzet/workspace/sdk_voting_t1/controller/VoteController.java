@@ -23,9 +23,14 @@ public class VoteController {
     private final VoteService voteService;
 
     // Получить все голосования
-    @GetMapping
+    @GetMapping("/all")
     public List<VoteDTOResponse> getAllVotes() {
         return voteService.getAllVotes();
+    }
+
+    @GetMapping("/{voteId}")
+    public VoteDTOResponse getVote(@PathVariable UUID voteId) {
+        return voteService.getVote(voteId);
     }
 
     // Создать новое голосование

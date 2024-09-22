@@ -32,6 +32,15 @@ public class VoteService {
                 .toList();
     }
 
+    public VoteDTOResponse getVote(UUID voteId) {
+        var vote = voteRepository.findById(voteId).orElseThrow();
+
+        return new VoteDTOResponse(vote.getId(),
+                vote.getTitle(),
+                vote.getOptions().stream().toList(),
+                vote.getStatus());
+    }
+
     // Метод для создания нового голосования
     public VoteDTORequest createVote(VoteDTORequest voteDTO) {
         // Создание нового голосования
