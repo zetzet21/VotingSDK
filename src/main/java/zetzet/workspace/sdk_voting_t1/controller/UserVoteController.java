@@ -29,5 +29,7 @@ public class UserVoteController {
     public List<UserVoteResultDTO> getKanoResults(@PathVariable UUID voteId) {
         return userVoteService.processKanoResults(voteId);
     }
+
+
 }
 

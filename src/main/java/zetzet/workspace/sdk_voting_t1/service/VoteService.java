@@ -28,7 +28,11 @@ public class VoteService {
     public List<VoteDTO> getAllVotes() {
         return voteRepository.findAll()
                 .stream()
-                .map(vote -> new VoteDTO(vote.getId(), vote.getTitle(), vote.getOptions().stream().map(VoteOptions::getText).toList(), vote.getStatus()))
+                .map(vote ->
+                        new VoteDTO(vote.getId(),
+                                vote.getTitle(),
+                                vote.getOptions().stream().toList(),
+                                vote.getStatus()))
                 .toList();
     }
 
@@ -40,9 +44,9 @@ public class VoteService {
         vote.setStatus(VoteStatus.ACTIVE);
 
         List<VoteOptions> options = voteDTO.options().stream()
-                .map(optionText -> {
+                .map(option -> {
                     VoteOptions voteOption = new VoteOptions();
-                    voteOption.setText(optionText);
+                    voteOption.setText(option.getText());
                     voteOption.setVote(vote);
                     return voteOption;
                 }).collect(Collectors.toList());
@@ -53,11 +57,7 @@ public class VoteService {
 
         return new VoteDTO(savedVote
                 .getId(), savedVote
-                .getTitle(), savedVote
-                .getOptions()
-                .stream()
-                .map(VoteOptions::getText)
-                .toList(), savedVote
+                .getTitle(), options, savedVote
                 .getStatus());
     }
 
