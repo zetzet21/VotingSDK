@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.*;
 
 import zetzet.workspace.sdk_voting_t1.dto.vote.CSIVoteDto;
 import zetzet.workspace.sdk_voting_t1.dto.vote.KanoVoteDTO;
+import zetzet.workspace.sdk_voting_t1.dto.vote.UserVoteCSIResultDTO;
 import zetzet.workspace.sdk_voting_t1.dto.vote.UserVoteResultDTO;
 import zetzet.workspace.sdk_voting_t1.service.UserVoteService;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -44,7 +44,7 @@ public class UserVoteController {
     }
 
     @GetMapping("/results/csi/{voteId}")
-    public Map<String, Double> getCSIResults(@PathVariable UUID voteId) {
+    public List<UserVoteCSIResultDTO> getCSIResults(@PathVariable UUID voteId) {
         return userVoteService.processCSIResults(voteId);
     }
 }

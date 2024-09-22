@@ -3,10 +3,7 @@ package zetzet.workspace.sdk_voting_t1.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import zetzet.workspace.sdk_voting_t1.dto.vote.CSIVoteDto;
-import zetzet.workspace.sdk_voting_t1.dto.vote.KanoVoteDTO;
-import zetzet.workspace.sdk_voting_t1.dto.vote.UserVoteResultDTO;
-import zetzet.workspace.sdk_voting_t1.dto.vote.VoteOptionWithCountAndPercent;
+import zetzet.workspace.sdk_voting_t1.dto.vote.*;
 import zetzet.workspace.sdk_voting_t1.entity.User;
 import zetzet.workspace.sdk_voting_t1.entity.UserVote;
 import zetzet.workspace.sdk_voting_t1.entity.UserVoteCSI;
@@ -124,7 +121,7 @@ public class UserVoteService {
                 .toList();
     }
 
-    public Map<String, Double> processCSIResults(UUID voteId) {
+    public List<UserVoteCSIResultDTO> processCSIResults(UUID voteId) {
         Vote vote = voteRepository.findById(voteId).orElseThrow();
 
         List<UserVoteCSI> userVotes = new ArrayList<>();
@@ -164,7 +161,10 @@ public class UserVoteService {
             );
         }
 
-        return result;
+        return result.entrySet()
+                .stream()
+                .map(x -> new UserVoteCSIResultDTO(x.getKey(), x.getValue()))
+                .toList();
     }
 }
 
