@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import zetzet.workspace.sdk_voting_t1.dto.vote.KanoVoteDTO;
 import zetzet.workspace.sdk_voting_t1.dto.vote.UserVoteResultDTO;
+import zetzet.workspace.sdk_voting_t1.dto.vote.VoteOptionWithCount;
 import zetzet.workspace.sdk_voting_t1.entity.User;
 import zetzet.workspace.sdk_voting_t1.entity.UserVote;
 import zetzet.workspace.sdk_voting_t1.entity.vote.Vote;
@@ -53,12 +54,45 @@ public class UserVoteService {
             userVotes.addAll(options.getResults());
         }
 
-        Map<String, Long> results = userVotes.stream()
-                .map(v -> kanoClassification.classify(v.getPositiveResponse(), v.getNegativeResponse()))
-                .collect(Collectors.groupingBy(result -> result, Collectors.counting()));
+        Map<String, Map<String, Long>> results = userVotes.stream()
+                .collect(Collectors.groupingBy(
+                        v -> v.getVoteOptions().getText(),
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                list -> {
+                                    Map<String, Long> classificationWithCount = new HashMap<>();
+                                    for (var l : list){
+                                        String classification = kanoClassification.classify(
+                                                l.getPositiveResponse(),
+                                                l.getNegativeResponse()
+                                        );
 
-        return results.entrySet().stream()
-                .map(entry -> new UserVoteResultDTO(voteId, entry.getKey(), entry.getValue()))
+                                        if (!classificationWithCount.containsKey(classification)){
+                                            classificationWithCount.put(classification, 0L);
+                                        }
+
+                                        classificationWithCount.put(
+                                                classification,
+                                                classificationWithCount.get(classification) + 1
+                                        );
+                                    }
+
+                                    return classificationWithCount;
+                                }
+                        )
+                ));
+
+        return results.entrySet()
+                .stream()
+                .map(entry -> new UserVoteResultDTO(
+                        voteId,
+                        entry.getKey(),
+                        entry.getValue()
+                                .entrySet()
+                                .stream()
+                                .map(x -> new VoteOptionWithCount(x.getKey(), x.getValue()))
+                                .toList())
+                )
                 .toList();
     }
 }

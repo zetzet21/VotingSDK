@@ -1,9 +1,7 @@
 package zetzet.workspace.sdk_voting_t1.mapper;
 
 import org.springframework.stereotype.Component;
-import zetzet.workspace.sdk_voting_t1.dto.vote.VoteCreateDTO;
-import zetzet.workspace.sdk_voting_t1.dto.vote.VoteDTO;
-import zetzet.workspace.sdk_voting_t1.entity.vote.Vote;
+
 import zetzet.workspace.sdk_voting_t1.entity.vote.VoteOptions;
 import zetzet.workspace.sdk_voting_t1.entity.vote.VoteStatus;
 
