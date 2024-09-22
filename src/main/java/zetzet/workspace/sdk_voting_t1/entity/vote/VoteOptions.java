@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import zetzet.workspace.sdk_voting_t1.entity.UserVote;
+import zetzet.workspace.sdk_voting_t1.entity.UserVoteCSI;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,5 +31,8 @@ public class VoteOptions {
 
     @OneToMany(mappedBy = "voteOptions", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserVote> results;
+
+    @OneToMany(mappedBy = "voteOptions", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserVoteCSI> resultsCSI;
 }
 

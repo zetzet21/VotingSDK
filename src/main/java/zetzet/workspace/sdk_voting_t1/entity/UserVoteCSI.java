@@ -3,7 +3,6 @@ package zetzet.workspace.sdk_voting_t1.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import zetzet.workspace.sdk_voting_t1.entity.vote.VoteOptions;
 
 import java.util.UUID;
@@ -11,8 +10,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Table(name = "user_vote")
-public class UserVote {
+@Table(name = "user_vote_csi")
+public class UserVoteCSI {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,10 +27,6 @@ public class UserVote {
     @JoinColumn(name = "vote_options_id")
     private VoteOptions voteOptions;
 
-    // Ответ на вопрос: как вы бы себя чувствовали, если функция будет добавлена
-    private String positiveResponse;
-
-    // Ответ на вопрос: как вы бы себя чувствовали, если функция НЕ будет добавлена
-    private String negativeResponse;
+    @Column(name = "user_rating")
+    private Integer userRating;
 }
-

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import zetzet.workspace.sdk_voting_t1.dto.response.UserInfoResponse;
 import zetzet.workspace.sdk_voting_t1.entity.User;
 import zetzet.workspace.sdk_voting_t1.security.JwtService;
 import zetzet.workspace.sdk_voting_t1.service.UserService;
@@ -27,10 +28,10 @@ public class UserController extends AbstractController {
 
     @GetMapping()
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<User> getUser(HttpServletRequest request) {
+    public ResponseEntity<UserInfoResponse> getUser(HttpServletRequest request) {
         String username = getUsername(request);
-        User user = userService.getByUsername(username);
+        UserInfoResponse userInfo = userService.getByUsername(username);
 
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(userInfo);
     }
 }

@@ -3,17 +3,21 @@ package zetzet.workspace.sdk_voting_t1.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import zetzet.workspace.sdk_voting_t1.dto.vote.CSIVoteDto;
 import zetzet.workspace.sdk_voting_t1.dto.vote.KanoVoteDTO;
 import zetzet.workspace.sdk_voting_t1.dto.vote.UserVoteResultDTO;
 import zetzet.workspace.sdk_voting_t1.dto.vote.VoteOptionWithCountAndPercent;
 import zetzet.workspace.sdk_voting_t1.entity.User;
 import zetzet.workspace.sdk_voting_t1.entity.UserVote;
+import zetzet.workspace.sdk_voting_t1.entity.UserVoteCSI;
 import zetzet.workspace.sdk_voting_t1.entity.vote.Vote;
 import zetzet.workspace.sdk_voting_t1.kano.KanoClassification;
+import zetzet.workspace.sdk_voting_t1.repository.UserVoteCSIRepository;
 import zetzet.workspace.sdk_voting_t1.repository.UserVoteRepository;
 import zetzet.workspace.sdk_voting_t1.repository.VoteOptionsRepository;
 import zetzet.workspace.sdk_voting_t1.repository.VoteRepository;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,6 +26,8 @@ import java.util.stream.Collectors;
 public class UserVoteService {
 
     private final UserVoteRepository userVoteRepository;
+
+    private final UserVoteCSIRepository userVoteCSIRepository;
 
     private final VoteOptionsRepository voteOptionsRepository;
 
@@ -43,6 +49,20 @@ public class UserVoteService {
         userVote.setPositiveResponse(kanoVoteDTO.positiveResponse());
         userVote.setNegativeResponse(kanoVoteDTO.negativeResponse());
         userVoteRepository.save(userVote);
+    }
+
+    public void castVote(CSIVoteDto csiVoteDto) {
+        UserVoteCSI userVote = userVoteCSIRepository.findByUserIdAndVoteOptionsId(csiVoteDto.userId(), csiVoteDto.voteId())
+                .orElseGet(() -> {
+                    UserVoteCSI newUserVote = new UserVoteCSI();
+                    newUserVote.setUser(new User(csiVoteDto.userId()));
+                    newUserVote.setVoteOptions(voteOptionsRepository.findById(csiVoteDto.voteOptionsId())
+                            .orElseThrow(() -> new RuntimeException("Vote not found")));
+                    return newUserVote;
+                });
+
+        userVote.setUserRating(csiVoteDto.userRating());
+        userVoteCSIRepository.save(userVote);
     }
 
     // Метод для обработки результатов по методу Кано
@@ -85,12 +105,11 @@ public class UserVoteService {
                         )
         ));
 
-
+        DecimalFormat decimalFormat = new DecimalFormat("#,##");
 
         return results.entrySet()
                 .stream()
                 .map(entry -> new UserVoteResultDTO(
-                        voteId,
                         entry.getKey(),
                         entry.getValue()
                                 .entrySet()
@@ -98,10 +117,54 @@ public class UserVoteService {
                                 .map(x -> new VoteOptionWithCountAndPercent(
                                         x.getKey(),
                                         x.getValue(),
-                                        (double) (100 * x.getValue() / countUserVotes.get(entry.getKey()))))
+                                        Double.valueOf(decimalFormat.format((double) 100 * x.getValue() / countUserVotes.get(entry.getKey()))))
+                                )
                                 .toList())
                 )
                 .toList();
+    }
+
+    public Map<String, Double> processCSIResults(UUID voteId) {
+        Vote vote = voteRepository.findById(voteId).orElseThrow();
+
+        List<UserVoteCSI> userVotes = new ArrayList<>();
+
+        for (var option : vote.getOptions()) {
+            userVotes.addAll(option.getResultsCSI());
+        }
+
+        Map<String, Long> classificationWithCount = new HashMap<>();
+        Map<String, Long> classificationWithSum = new HashMap<>();
+        for (var userVote : userVotes){
+
+            var optionsText = userVote.getVoteOptions().getText();
+
+            if (!classificationWithCount.containsKey(optionsText)){
+                classificationWithCount.put(optionsText, 0L);
+                classificationWithSum.put(optionsText, 0L);
+            }
+
+            classificationWithCount.put(
+                    optionsText,
+                    classificationWithCount.get(optionsText) + 1
+            );
+
+            classificationWithSum.put(
+                    optionsText,
+                    classificationWithSum.get(optionsText) + userVote.getUserRating()
+            );
+        }
+
+        Map<String, Double> result = new HashMap<>();
+
+        for (var key : classificationWithCount.keySet()) {
+            result.put(
+                    key,
+                    (double) classificationWithSum.get(key) / classificationWithCount.get(key) * 100
+            );
+        }
+
+        return result;
     }
 }
 

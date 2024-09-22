@@ -6,11 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import zetzet.workspace.sdk_voting_t1.dto.vote.CSIVoteDto;
 import zetzet.workspace.sdk_voting_t1.dto.vote.KanoVoteDTO;
 import zetzet.workspace.sdk_voting_t1.dto.vote.UserVoteResultDTO;
 import zetzet.workspace.sdk_voting_t1.service.UserVoteService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -23,16 +25,27 @@ public class UserVoteController {
     private final UserVoteService userVoteService;
 
     // Записать голос пользователя
-    @PostMapping
+    @PostMapping("/kano")
     public ResponseEntity<Void> castVote(@RequestBody KanoVoteDTO kanoVoteDTO) {
         userVoteService.castVote(kanoVoteDTO);
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/csi")
+    public ResponseEntity<Void> castVote(@RequestBody CSIVoteDto csiVoteDto) {
+        userVoteService.castVote(csiVoteDto);
+        return ResponseEntity.ok().build();
+    }
+
     // Получить результаты голосования по методу Кано
-    @GetMapping("/results/{voteId}")
+    @GetMapping("/results/kano/{voteId}")
     public List<UserVoteResultDTO> getKanoResults(@PathVariable UUID voteId) {
         return userVoteService.processKanoResults(voteId);
+    }
+
+    @GetMapping("/results/csi/{voteId}")
+    public Map<String, Double> getCSIResults(@PathVariable UUID voteId) {
+        return userVoteService.processCSIResults(voteId);
     }
 }
 
