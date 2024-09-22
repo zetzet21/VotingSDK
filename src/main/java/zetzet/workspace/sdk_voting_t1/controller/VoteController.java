@@ -1,5 +1,7 @@
 package zetzet.workspace.sdk_voting_t1.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,24 +24,53 @@ public class VoteController {
 
     private final VoteService voteService;
 
-    // Получить все голосования
+    @Operation(summary = "Получить все голосования", description = "Возвращает информацию о всех голосованиях.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Успешно получена информация о голосованиях"),
+                    @ApiResponse(responseCode = "400", description = "Неверные параметры запроса"),
+                    @ApiResponse(responseCode = "401", description = "Не авторизован, пользователь не аутентифицирован"),
+                    @ApiResponse(responseCode = "403", description = "Нет доступа")
+            }
+    )
     @GetMapping("/all")
     public List<VoteDTOResponse> getAllVotes() {
         return voteService.getAllVotes();
     }
 
+    @Operation(summary = "Получить все голосования", description = "Возвращает информацию о всех голосованиях.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Успешно получена информация о голосованиях"),
+                    @ApiResponse(responseCode = "400", description = "Неверные параметры запроса"),
+                    @ApiResponse(responseCode = "401", description = "Не авторизован, пользователь не аутентифицирован"),
+                    @ApiResponse(responseCode = "403", description = "Нет доступа")
+            }
+    )
     @GetMapping("/{voteId}")
     public VoteDTOResponse getVote(@PathVariable UUID voteId) {
         return voteService.getVote(voteId);
     }
 
-    // Создать новое голосование
+    @Operation(summary = "Получить все голосования", description = "Возвращает информацию о всех голосованиях.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Успешно получена информация о голосованиях"),
+                    @ApiResponse(responseCode = "400", description = "Неверные параметры запроса"),
+                    @ApiResponse(responseCode = "401", description = "Не авторизован, пользователь не аутентифицирован"),
+                    @ApiResponse(responseCode = "403", description = "Нет доступа")
+            }
+    )
     @PostMapping
     public ResponseEntity<VoteDTORequest> createVote(@RequestBody VoteDTORequest voteDTO) {
         return ResponseEntity.ok(voteService.createVote(voteDTO));
     }
 
-    // Закрыть голосование
+    @Operation(summary = "Получить все голосования", description = "Возвращает информацию о всех голосованиях.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Успешно получена информация о голосованиях"),
+                    @ApiResponse(responseCode = "400", description = "Неверные параметры запроса"),
+                    @ApiResponse(responseCode = "401", description = "Не авторизован, пользователь не аутентифицирован"),
+                    @ApiResponse(responseCode = "403", description = "Нет доступа")
+            }
+    )
     @PostMapping("/{voteId}/close")
     public ResponseEntity<Void> closeVote(@PathVariable UUID voteId) {
         voteService.closeVote(voteId);

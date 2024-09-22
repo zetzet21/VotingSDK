@@ -1,5 +1,7 @@
 package zetzet.workspace.sdk_voting_t1.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -30,6 +32,14 @@ public class UserController extends AbstractController {
         this.mapper = mapper;
     }
 
+    @Operation(summary = "Получить все голосования", description = "Возвращает информацию о всех голосованиях.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Успешно получена информация о голосованиях"),
+                    @ApiResponse(responseCode = "400", description = "Неверные параметры запроса"),
+                    @ApiResponse(responseCode = "401", description = "Не авторизован, пользователь не аутентифицирован"),
+                    @ApiResponse(responseCode = "403", description = "Нет доступа")
+            }
+    )
     @GetMapping()
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserInfoResponse> getUser(HttpServletRequest request) {
